@@ -191,3 +191,144 @@ public class ManageJobsController implements AdminChildController {
             }
         }).start();
     }
+
+    @FXML
+    private void handleDeleteJob() {
+        JsonNode selected = jobTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            selectLabel.setText("← Please select a job first");
+            return;
+        }
+
+        long jobId = selected.path("id").asLong();
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Job");
+        confirm.setHeaderText("Delete selected job drive?");
+        confirm.setContentText("This action cannot be undone.");
+        Optional<ButtonType> choice = confirm.showAndWait();
+        if (choice.isEmpty() || choice.get() != ButtonType.OK) {
+            return;
+        }
+
+        shortlistStatus.setText("Deleting job...");
+        shortlistStatus.setStyle("-fx-text-fill:#3182ce; -fx-font-size:12px;");
+
+        new Thread(() -> {
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/jobs/" + jobId))
+                    .header("Authorization", "Bearer " + SessionManager.getInstance().getToken())
+                    .DELETE()
+                    .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                Platform.runLater(() -> {
+                    if (response.statusCode() == 204 || response.statusCode() == 200) {
+                        shortlistStatus.setText("Job deleted successfully.");
+                        shortlistStatus.setStyle("-fx-text-fill:#2f855a; -fx-font-size:12px;");
+                        selectLabel.setText("← Select a job first");
+                        eligibleTitle.setText("Eligible Students");
+                        currentJobId = null;
+                        studentRows.clear();
+                        loadJobs();
+                    } else {
+                        shortlistStatus.setText("Delete failed (HTTP " + response.statusCode() + ").");
+                        shortlistStatus.setStyle("-fx-text-fill:#e94560; -fx-font-size:12px;");
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    shortlistStatus.setText("Error deleting job.");
+                    shortlistStatus.setStyle("-fx-text-fill:#e94560; -fx-font-size:12px;");
+                });
+            }
+        }).start();
+    }
+
+    @FXML
+    private void handleShortlist() {
+        if (currentJobId == null) {
+            shortlistStatus.setText("Select a job and load eligible students first.");
+            shortlistStatus.setStyle("-fx-text-fill:#e94560; -fx-font-size:12px;");
+            return;
+        }
+
+        List<StudentRow> toShortlist = studentRows.stream()
+            .filter(StudentRow::isSelected)
+            .filter(r -> r.appId != null)
+            .toList();
+
+        if (toShortlist.isEmpty()) {
+            shortlistStatus.setText("No selected students with applications found.");
+            shortlistStatus.setStyle("-fx-text-fill:#e94560; -fx-font-size:12px;");
+            return;
+        }
+
+        shortlistStatus.setText("Updating shortlisted status...");
+        shortlistStatus.setStyle("-fx-text-fill:#3182ce; -fx-font-size:12px;");
+
+        new Thread(() -> {
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                AtomicInteger success = new AtomicInteger(0);
+
+                for (StudentRow row : toShortlist) {
+                    HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/applications/"
+                            + row.appId + "/status?status=SHORTLISTED_OA"))
+                        .header("Authorization", "Bearer " + SessionManager.getInstance().getToken())
+                        .PUT(HttpRequest.BodyPublishers.noBody())
+                        .build();
+
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    if (response.statusCode() == 200) {
+                        success.incrementAndGet();
+                    }
+                }
+
+                Platform.runLater(() -> {
+                    shortlistStatus.setText("Shortlisted " + success.get() + " of "
+                        + toShortlist.size() + " selected students.");
+                    shortlistStatus.setStyle("-fx-text-fill:#2f855a; -fx-font-size:12px;");
+                    handleViewEligible();
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    shortlistStatus.setText("Error while shortlisting students.");
+                    shortlistStatus.setStyle("-fx-text-fill:#e94560; -fx-font-size:12px;");
+                });
+            }
+        }).start();
+    }
+
+    public static class StudentRow {
+        private final Long studentId;
+        private final Long appId;
+        private final String usn;
+        private final String name;
+        private final String branch;
+        private final String cgpa;
+        private final String backlogs;
+        private final SimpleBooleanProperty selected = new SimpleBooleanProperty(false);
+
+        public StudentRow(Long studentId, Long appId, String usn, String name,
+                          String branch, String cgpa, String backlogs) {
+            this.studentId = studentId;
+            this.appId = appId;
+            this.usn = usn;
+            this.name = name;
+            this.branch = branch;
+            this.cgpa = cgpa;
+            this.backlogs = backlogs;
+        }
+
+        public SimpleBooleanProperty selectedProperty() {
+            return selected;
+        }
+
+        public boolean isSelected() {
+            return selected.get();
+        }
+    }
+}
