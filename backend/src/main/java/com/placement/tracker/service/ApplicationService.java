@@ -148,6 +148,7 @@ public class ApplicationService {
     private ApplicationResponse toResponse(Application application) {
         return new ApplicationResponse(
                 application.getId(),
+                application.getStudent().getId(),
                 application.getJobPost().getId(),
                 application.getJobPost().getCompanyName(),
                 application.getCurrentStatus(),

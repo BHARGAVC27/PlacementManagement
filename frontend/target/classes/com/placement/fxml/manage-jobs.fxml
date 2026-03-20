@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.ManageJobsController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Manage Job Drives" styleClass="page-title"/>
+            <Label text="Select a job to view eligible students and shortlist them."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Jobs Table -->
+        <VBox styleClass="content-card" spacing="14">
+            <Label text="All Job Drives"
+                   style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+            <TableView fx:id="jobTable" prefHeight="230"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colCompany" text="Company" prefWidth="150"/>
+                    <TableColumn fx:id="colRole" text="Role" prefWidth="150"/>
+                    <TableColumn fx:id="colPackage" text="Package (LPA)" prefWidth="110"/>
+                    <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="110"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="90"/>
+                    <TableColumn fx:id="colBranches" text="Branches" prefWidth="150"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="👥 View Eligible Students" onAction="#handleViewEligible"
+                        styleClass="apply-btn"
+                        style="-fx-padding:8 20 8 20;"/>
+                <Button text="🗑 Delete Job" onAction="#handleDeleteJob"
+                        style="-fx-background-color:#fed7d7; -fx-text-fill:#9b2335;
+                               -fx-background-radius:6; -fx-padding:8 20 8 20;
+                               -fx-cursor:hand; -fx-font-size:12px; -fx-font-weight:bold;"/>
+                <Label fx:id="selectLabel" text="← Select a job first"
+                       style="-fx-text-fill:#718096; -fx-font-size:12px;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Eligible Students -->
+        <VBox styleClass="content-card" spacing="14">
+
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label fx:id="eligibleTitle" text="Eligible Students"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"
+                       HBox.hgrow="ALWAYS"/>
+                <Button text="✅ Shortlist Selected" onAction="#handleShortlist"
+                        styleClass="apply-btn" style="-fx-padding:8 20 8 20;"/>
+            </HBox>
+
+            <TableView fx:id="studentTable" prefHeight="230"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colSelect" text="Select" prefWidth="60"/>
+                    <TableColumn fx:id="colUsn" text="USN" prefWidth="100"/>
+                    <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                    <TableColumn fx:id="colBranch" text="Branch" prefWidth="80"/>
+                    <TableColumn fx:id="colCgpa" text="CGPA" prefWidth="80"/>
+                    <TableColumn fx:id="colBacklogs" text="Backlogs" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="shortlistStatus" text="Select a job above and click View Eligible Students."
+                   style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

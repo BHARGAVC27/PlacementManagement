@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.PostJobController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;">
+
+    <VBox styleClass="main-content" spacing="24"
+          stylesheets="@../styles/app.css">
+
+        <!-- Header -->
+        <VBox spacing="4">
+            <Label text="Post New Job Drive" styleClass="page-title"/>
+            <Label text="Fill in the details to create a new job drive for students."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Form Card -->
+        <VBox styleClass="content-card" spacing="20">
+
+            <!-- Row 1 -->
+            <HBox spacing="20">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="COMPANY NAME" styleClass="login-label"/>
+                    <TextField fx:id="companyField" promptText="e.g. Google"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="PACKAGE (LPA)" styleClass="login-label"/>
+                    <TextField fx:id="packageField" promptText="e.g. 12.5"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 2 -->
+            <VBox spacing="6">
+                <Label text="ROLE DESCRIPTION" styleClass="login-label"/>
+                <TextArea fx:id="roleField" promptText="e.g. Software Development Engineer"
+                          prefHeight="80" wrapText="true"/>
+            </VBox>
+
+            <!-- Row 3 -->
+            <HBox spacing="20">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="DEADLINE" styleClass="login-label"/>
+                    <DatePicker fx:id="deadlinePicker"
+                                style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="STATUS" styleClass="login-label"/>
+                    <ComboBox fx:id="statusCombo"
+                              style="-fx-pref-width:9999;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 4 — Eligibility -->
+            <Label text="ELIGIBILITY CRITERIA"
+                   style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e; -fx-padding: 8 0 0 0;"/>
+
+            <HBox spacing="20">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MIN CGPA" styleClass="login-label"/>
+                    <TextField fx:id="minCgpaField" promptText="e.g. 7.0"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MIN 10TH %" styleClass="login-label"/>
+                    <TextField fx:id="min10thField" promptText="e.g. 70.0"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MIN 12TH %" styleClass="login-label"/>
+                    <TextField fx:id="min12thField" promptText="e.g. 70.0"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="MAX BACKLOGS" styleClass="login-label"/>
+                    <TextField fx:id="maxBacklogsField" promptText="e.g. 0"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 5 — Branches -->
+            <VBox spacing="8">
+                <Label text="ALLOWED BRANCHES" styleClass="login-label"/>
+                <HBox spacing="16">
+                    <CheckBox fx:id="cbCSE" text="CSE"/>
+                    <CheckBox fx:id="cbISE" text="ISE"/>
+                    <CheckBox fx:id="cbECE" text="ECE"/>
+                    <CheckBox fx:id="cbMECH" text="MECH"/>
+                    <CheckBox fx:id="cbCIVIL" text="CIVIL"/>
+                    <CheckBox fx:id="cbEEE" text="EEE"/>
+                </HBox>
+            </VBox>
+
+            <!-- Status message -->
+            <Label fx:id="statusLabel" text=" "
+                   style="-fx-font-size:13px; -fx-text-fill:#38a169;"/>
+
+            <!-- Buttons -->
+            <HBox spacing="12">
+                <Button fx:id="postButton" text="Post Job Drive" onAction="#handlePostJob"
+                    styleClass="apply-btn"
+                    style="-fx-padding: 10 24 10 24; -fx-font-size:13px;"/>
+                <Button fx:id="clearButton" text="Clear Form" onAction="#handleClear"
+                        style="-fx-background-color:#e2e8f0; -fx-text-fill:#4a5568;
+                            -fx-background-radius:6; -fx-padding: 10 24 10 24;
+                            -fx-cursor:hand; -fx-font-size:13px;"/>
+            </HBox>
+
+        </VBox>
+    </VBox>
+</ScrollPane>

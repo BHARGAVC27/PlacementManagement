@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.StudentHomeController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Student Dashboard" styleClass="page-title"/>
+            <Label text="Welcome back! Here's what's happening." styleClass="page-subtitle"/>
+        </VBox>
+
+        <HBox spacing="16">
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statOpenJobs" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#e94560;"/>
+                <Label text="Open Drives" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statApplied" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#3182ce;"/>
+                <Label text="Applied" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statShortlisted" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#38a169;"/>
+                <Label text="Shortlisted" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statInterviews" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#d69e2e;"/>
+                <Label text="Interviews" styleClass="stat-label"/>
+            </VBox>
+        </HBox>
+
+        <VBox styleClass="content-card" spacing="14">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Available Job Drives"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"
+                       HBox.hgrow="ALWAYS"/>
+                <Button text="View All →" onAction="#goToJobDrives"
+                        style="-fx-background-color:transparent; -fx-text-fill:#e94560;
+                               -fx-font-size:12px; -fx-cursor:hand; -fx-border-color:transparent;"/>
+            </HBox>
+
+            <TableView fx:id="jobTable" prefHeight="280"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colCompany" text="Company" prefWidth="160"/>
+                    <TableColumn fx:id="colRole" text="Role" prefWidth="160"/>
+                    <TableColumn fx:id="colPackage" text="Package (LPA)" prefWidth="120"/>
+                    <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="120"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="90"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="✅ Quick Apply" onAction="#handleQuickApply"
+                        styleClass="apply-btn"
+                        style="-fx-padding:8 20 8 20;"/>
+                <Label fx:id="applyStatus" text="← Select a job to apply"
+                       style="-fx-text-fill:#718096; -fx-font-size:12px;"/>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

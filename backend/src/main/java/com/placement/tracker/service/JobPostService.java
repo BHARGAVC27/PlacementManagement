@@ -19,7 +19,6 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// Service layer for job posting operations and eligibility checks.
 @Service
 @Transactional
 public class JobPostService {
@@ -39,17 +38,12 @@ public class JobPostService {
         this.userRepository = userRepository;
     }
 
-    // Steps: resolve admin by email -> map request -> save job -> return DTO.
     public JobPostResponse create(JobPostRequest request, String adminEmail) {
         Long userId = userRepository.findByEmail(adminEmail)
                 .orElseThrow(() -> new NoSuchElementException("User not found"))
                 .getId();
 
-        Long adminId = adminRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Admin not found"))
-                .getId();
-
-        Admin admin = adminRepository.findById(adminId)
+        Admin admin = adminRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Admin not found"));
 
         JobPost jobPost = new JobPost();
@@ -60,17 +54,14 @@ public class JobPostService {
         return toJobPostResponse(saved);
     }
 
-    // Steps: find job -> copy updated fields -> save -> return response DTO.
     public JobPostResponse update(Long id, JobPostRequest request) {
         JobPost existing = jobPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Job post not found"));
-
         applyRequest(existing, request);
         JobPost saved = jobPostRepository.save(existing);
         return toJobPostResponse(saved);
     }
 
-    // Steps: fetch active jobs -> map each entity to response DTO -> return list.
     @Transactional(readOnly = true)
     public List<JobPostResponse> getAll() {
         return jobPostRepository.findByStatus(JobStatus.OPEN)
@@ -79,7 +70,6 @@ public class JobPostService {
                 .toList();
     }
 
-    // Steps: find job by id -> map entity to DTO -> return DTO.
     @Transactional(readOnly = true)
     public JobPostResponse getJobById(Long id) {
         JobPost jobPost = jobPostRepository.findById(id)
@@ -87,7 +77,6 @@ public class JobPostService {
         return toJobPostResponse(jobPost);
     }
 
-    // Steps: load job -> fetch all profiles -> filter by criteria -> map to DTO list.
     @Transactional(readOnly = true)
     public List<EligibleStudentResponse> getEligibleStudents(Long jobId) {
         JobPost jobPost = jobPostRepository.findById(jobId)
@@ -108,6 +97,12 @@ public class JobPostService {
                 .toList();
     }
 
+    public void delete(Long id) {
+        JobPost existing = jobPostRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Job post not found"));
+        jobPostRepository.delete(existing);
+    }
+
     private void applyRequest(JobPost jobPost, JobPostRequest request) {
         jobPost.setCompanyName(request.companyName());
         jobPost.setRoleDescription(request.roleDescription());
@@ -118,8 +113,8 @@ public class JobPostService {
         jobPost.setMin10th(request.min10th());
         jobPost.setMin12th(request.min12th());
         jobPost.setMaxBacklogs(request.maxBacklogs());
-
-        Set<String> branches = request.allowedBranches() == null ? Set.of() : request.allowedBranches();
+        Set<String> branches = request.allowedBranches() == null
+                ? Set.of() : request.allowedBranches();
         jobPost.setAllowedBranches(new HashSet<>(branches));
     }
 
@@ -128,23 +123,16 @@ public class JobPostService {
         boolean tenthOk = compare(profile.getTenthPercent(), jobPost.getMin10th()) >= 0;
         boolean twelfthOk = compare(profile.getTwelfthPercent(), jobPost.getMin12th()) >= 0;
         boolean backlogOk = profile.getActiveBacklogs() <= jobPost.getMaxBacklogs();
-
-        Set<String> allowed = jobPost.getAllowedBranches() == null ? Set.of() : jobPost.getAllowedBranches();
+        Set<String> allowed = jobPost.getAllowedBranches() == null
+                ? Set.of() : jobPost.getAllowedBranches();
         boolean branchOk = allowed.isEmpty() || allowed.contains(profile.getBranch());
-
         return cgpaOk && tenthOk && twelfthOk && backlogOk && branchOk;
     }
 
     private int compare(BigDecimal left, BigDecimal right) {
-        if (left == null && right == null) {
-            return 0;
-        }
-        if (left == null) {
-            return -1;
-        }
-        if (right == null) {
-            return 1;
-        }
+        if (left == null && right == null) return 0;
+        if (left == null) return -1;
+        if (right == null) return 1;
         return left.compareTo(right);
     }
 

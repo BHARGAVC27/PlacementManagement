@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// REST controller for application APIs.
 @RestController
 @RequestMapping("/api/applications")
 @Tag(name = "Applications", description = "Application APIs")
@@ -31,26 +30,35 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    // Applies current logged-in student to a job post.
     @PostMapping
     @Operation(summary = "Apply to a job")
-    public ResponseEntity<ApplicationResponse> apply(@AuthenticationPrincipal UserDetails principal,
-                                                     @RequestBody ApplicationRequest request) {
-        return ResponseEntity.ok(applicationService.apply(principal.getUsername(), request.jobPostId()));
+    public ResponseEntity<ApplicationResponse> apply(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestBody ApplicationRequest request) {
+        return ResponseEntity.ok(
+            applicationService.apply(principal.getUsername(), request.jobPostId()));
     }
 
-    // Returns applications of currently logged-in student.
     @GetMapping("/my")
     @Operation(summary = "Get my applications")
-    public ResponseEntity<List<ApplicationResponse>> getMy(@AuthenticationPrincipal UserDetails principal) {
-        return ResponseEntity.ok(applicationService.getByStudent(principal.getUsername()));
+    public ResponseEntity<List<ApplicationResponse>> getMy(
+            @AuthenticationPrincipal UserDetails principal) {
+        return ResponseEntity.ok(
+            applicationService.getByStudent(principal.getUsername()));
     }
 
-    // Updates the status of one application.
+    @GetMapping("/job/{jobId}")
+    @Operation(summary = "Get all applications for a job")
+    public ResponseEntity<List<ApplicationResponse>> getByJob(
+            @PathVariable Long jobId) {
+        return ResponseEntity.ok(applicationService.getByJob(jobId));
+    }
+
     @PutMapping("/{id}/status")
     @Operation(summary = "Update application status")
-    public ResponseEntity<ApplicationResponse> updateStatus(@PathVariable Long id,
-                                                            @RequestParam AppStatus status) {
+    public ResponseEntity<ApplicationResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam AppStatus status) {
         return ResponseEntity.ok(applicationService.updateStatus(id, status));
     }
-}
+}   

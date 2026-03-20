@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.MyApplicationsController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="My Applications" styleClass="page-title"/>
+            <Label text="Track the status of all your job applications."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Status Summary Cards -->
+        <HBox spacing="16">
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="totalCount" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#3182ce;"/>
+                <Label text="Total Applied" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="shortlistedCount" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#d69e2e;"/>
+                <Label text="Shortlisted" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="interviewCount" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#805ad5;"/>
+                <Label text="Interviews" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="offeredCount" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#38a169;"/>
+                <Label text="Offered" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="rejectedCount" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#e94560;"/>
+                <Label text="Rejected" styleClass="stat-label"/>
+            </VBox>
+        </HBox>
+
+        <!-- Applications Table -->
+        <VBox styleClass="content-card" spacing="14">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="All Applications"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"
+                       HBox.hgrow="ALWAYS"/>
+                <Button text="🔄 Refresh" onAction="#handleRefresh"
+                        style="-fx-background-color:#e2e8f0; -fx-text-fill:#4a5568;
+                               -fx-background-radius:6; -fx-padding:6 16 6 16;
+                               -fx-cursor:hand; -fx-font-size:12px;"/>
+            </HBox>
+
+            <TableView fx:id="appTable" prefHeight="400"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colCompany" text="Company" prefWidth="180"/>
+                    <TableColumn fx:id="colAppliedDate" text="Applied On" prefWidth="160"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="200"/>
+                    <TableColumn fx:id="colRemarks" text="Remarks" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="statusLabel" text=" "
+                   style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

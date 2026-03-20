@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.JobDrivesController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Job Drives" styleClass="page-title"/>
+            <Label text="Browse available job drives and apply to ones you are eligible for."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <VBox styleClass="content-card" spacing="14">
+            <Label text="Available Jobs"
+                   style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+
+            <TableView fx:id="jobTable" prefHeight="350"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colCompany" text="Company" prefWidth="150"/>
+                    <TableColumn fx:id="colRole" text="Role" prefWidth="160"/>
+                    <TableColumn fx:id="colPackage" text="Package (LPA)" prefWidth="110"/>
+                    <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="110"/>
+                    <TableColumn fx:id="colMinCgpa" text="Min CGPA" prefWidth="90"/>
+                    <TableColumn fx:id="colBranches" text="Branches" prefWidth="150"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="90"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="✅ Apply for Selected Job" onAction="#handleApply"
+                        styleClass="apply-btn"
+                        style="-fx-padding:10 24 10 24; -fx-font-size:13px;"/>
+                <Label fx:id="statusLabel" text="← Select a job to apply"
+                       style="-fx-text-fill:#718096; -fx-font-size:12px;"/>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

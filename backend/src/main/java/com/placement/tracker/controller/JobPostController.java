@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// REST controller for job post APIs.
 @RestController
 @RequestMapping("/api/jobs")
 @Tag(name = "Jobs", description = "Job post APIs")
@@ -30,40 +30,45 @@ public class JobPostController {
         this.jobPostService = jobPostService;
     }
 
-    // Returns all active/open jobs.
     @GetMapping
     @Operation(summary = "Get all active jobs")
     public ResponseEntity<List<JobPostResponse>> getAll() {
         return ResponseEntity.ok(jobPostService.getAll());
     }
 
-    // Creates a job post using currently logged-in admin/officer identity.
     @PostMapping
     @Operation(summary = "Create job post")
-    public ResponseEntity<JobPostResponse> create(@AuthenticationPrincipal UserDetails principal,
-                                                  @RequestBody JobPostRequest request) {
+    public ResponseEntity<JobPostResponse> create(
+            @AuthenticationPrincipal UserDetails principal,
+            @RequestBody JobPostRequest request) {
         return ResponseEntity.ok(jobPostService.create(request, principal.getUsername()));
     }
 
-    // Returns one job post by id.
     @GetMapping("/{id}")
     @Operation(summary = "Get job by id")
     public ResponseEntity<JobPostResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(jobPostService.getJobById(id));
     }
 
-    // Updates a job post by id.
     @PutMapping("/{id}")
     @Operation(summary = "Update job post")
-    public ResponseEntity<JobPostResponse> update(@PathVariable Long id,
-                                                  @RequestBody JobPostRequest request) {
+    public ResponseEntity<JobPostResponse> update(
+            @PathVariable Long id,
+            @RequestBody JobPostRequest request) {
         return ResponseEntity.ok(jobPostService.update(id, request));
     }
 
-    // Returns students eligible for the given job id based on criteria.
     @GetMapping("/{id}/eligible-students")
     @Operation(summary = "Get eligible students for job")
-    public ResponseEntity<List<EligibleStudentResponse>> getEligibleStudents(@PathVariable Long id) {
+    public ResponseEntity<List<EligibleStudentResponse>> getEligibleStudents(
+            @PathVariable Long id) {
         return ResponseEntity.ok(jobPostService.getEligibleStudents(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete job post")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        jobPostService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
