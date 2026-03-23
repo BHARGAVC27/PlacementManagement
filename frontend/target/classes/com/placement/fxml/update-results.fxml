@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.UpdateResultsController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Placement Pipeline" styleClass="page-title"/>
+            <Label text="Manage each round of the placement process step by step."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Job Selection -->
+        <VBox styleClass="content-card" spacing="14">
+            <Label text="Select Job Drive"
+                   style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <ComboBox fx:id="jobCombo" promptText="Select a job drive..."
+                          style="-fx-pref-width:400;"/>
+                <Button text="Load Pipeline" onAction="#handleLoadPipeline"
+                        styleClass="apply-btn" style="-fx-padding:8 20 8 20;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Pipeline Status Bar -->
+        <HBox fx:id="pipelineBar" spacing="0" alignment="CENTER"
+              style="-fx-background-color:white; -fx-background-radius:12;
+                     -fx-padding:16; -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,3);">
+            <Label text="Select a job to see the pipeline."
+                   style="-fx-text-fill:#718096; -fx-font-size:13px;"/>
+        </HBox>
+
+        <!-- Current Stage -->
+        <VBox styleClass="content-card" spacing="14" fx:id="stageCard">
+
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Label fx:id="stageTitle" text="Pipeline"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"
+                       HBox.hgrow="ALWAYS"/>
+                <Label fx:id="stageBadge" text=""
+                       style="-fx-background-color:#e2e8f0; -fx-text-fill:#4a5568;
+                              -fx-background-radius:20; -fx-padding:4 12 4 12;
+                              -fx-font-size:11px; -fx-font-weight:bold;"/>
+            </HBox>
+
+            <Label fx:id="stageDesc" text="Select a job and load the pipeline."
+                   style="-fx-text-fill:#718096; -fx-font-size:12px;"/>
+
+            <!-- Round details if available -->
+            <VBox fx:id="roundDetailsBox"
+                  style="-fx-background-color:#f7fafc; -fx-background-radius:8;
+                         -fx-padding:12; -fx-border-color:#e2e8f0; -fx-border-radius:8;
+                         -fx-border-width:1;">
+                <Label fx:id="roundName" text=""
+                       style="-fx-font-size:13px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+                <Label fx:id="roundTime" text=""
+                       style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+                <Label fx:id="roundVenue" text=""
+                       style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+                <Label fx:id="roundInstructions" text=""
+                       style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+            </VBox>
+
+            <!-- Students Table -->
+            <TableView fx:id="studentsTable" prefHeight="300"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colName" text="Name" prefWidth="160"/>
+                    <TableColumn fx:id="colUsn" text="USN" prefWidth="110"/>
+                    <TableColumn fx:id="colBranch" text="Branch" prefWidth="80"/>
+                    <TableColumn fx:id="colCgpa" text="CGPA" prefWidth="70"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="160"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="260"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="actionStatus" text=" "
+                   style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+
+        </VBox>
+
+    </VBox>
+</ScrollPane>

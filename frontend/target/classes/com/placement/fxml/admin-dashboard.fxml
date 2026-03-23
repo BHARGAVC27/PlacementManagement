@@ -11,14 +11,25 @@
         <VBox styleClass="sidebar">
             <Label text="PLACEMENT" styleClass="sidebar-title"/>
             <Label fx:id="userEmailLabel" text="admin@uni.edu" styleClass="sidebar-subtitle"/>
-            <Pane style="-fx-background-color:#2d3748; -fx-pref-height:1; -fx-min-height:1; -fx-max-height:1;" prefWidth="220"/>
-            <Button text="🏠  Dashboard" onAction="#showDashboard" styleClass="sidebar-btn" fx:id="btnDashboard"/>
-            <Button text="📢  Post Job Drive" onAction="#showPostJob" styleClass="sidebar-btn" fx:id="btnPostJob"/>
-            <Button text="💼  Manage Jobs" onAction="#showManageJobs" styleClass="sidebar-btn" fx:id="btnManageJobs"/>
-            <Button text="🎓  Student Database" onAction="#showStudents" styleClass="sidebar-btn" fx:id="btnStudents"/>
-            <Button text="📊  Reports" onAction="#showReports" styleClass="sidebar-btn" fx:id="btnReports"/>
+            <Pane style="-fx-background-color:#2d3748; -fx-pref-height:1;
+                         -fx-min-height:1; -fx-max-height:1;" prefWidth="220"/>
+            <Button text="🏠  Dashboard" onAction="#showDashboard"
+                    styleClass="sidebar-btn" fx:id="btnDashboard"/>
+            <Button text="📢  Post Job Drive" onAction="#showPostJob"
+                    styleClass="sidebar-btn" fx:id="btnPostJob"/>
+            <Button text="💼  Manage Jobs" onAction="#showManageJobs"
+                    styleClass="sidebar-btn" fx:id="btnManageJobs"/>
+            <Button text="📊  Update Results" onAction="#showUpdateResults"
+                    styleClass="sidebar-btn" fx:id="btnResults"/>
+            <Button text="📅  Schedule Rounds" onAction="#showScheduleRounds"
+                    styleClass="sidebar-btn" fx:id="btnSchedule"/>
+            <Button text="🎓  Student Database" onAction="#showStudents"
+                    styleClass="sidebar-btn" fx:id="btnStudents"/>
+            <Button text="📈  Reports" onAction="#showReports"
+                    styleClass="sidebar-btn" fx:id="btnReports"/>
             <Pane VBox.vgrow="ALWAYS"/>
-            <Button text="⇠  Logout" onAction="#handleLogout" styleClass="sidebar-logout"/>
+            <Button text="⇠  Logout" onAction="#handleLogout"
+                    styleClass="sidebar-logout"/>
         </VBox>
     </left>
 

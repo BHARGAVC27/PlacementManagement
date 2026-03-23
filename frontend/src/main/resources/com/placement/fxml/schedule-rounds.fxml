@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.ScheduleRoundsController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Schedule Interview Rounds" styleClass="page-title"/>
+            <Label text="Add rounds for a job drive and view existing ones."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Add Round Form -->
+        <VBox styleClass="content-card" spacing="16">
+            <Label text="Add New Round"
+                   style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+
+            <!-- Row 1 — Job + Round Name -->
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="JOB DRIVE" styleClass="login-label"/>
+                    <ComboBox fx:id="jobCombo" promptText="Select a job drive..."
+                              style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="ROUND NAME" styleClass="login-label"/>
+                    <ComboBox fx:id="roundNameCombo" promptText="Select round type..."
+                              style="-fx-pref-width:9999;" editable="true"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 2 — Date + Time -->
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="DATE" styleClass="login-label"/>
+                    <DatePicker fx:id="datePicker"
+                                style="-fx-pref-width:9999;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="TIME (HH:MM)" styleClass="login-label"/>
+                    <TextField fx:id="timeField" promptText="e.g. 10:30"
+                               style="-fx-pref-width:9999;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 3 — Venue -->
+            <VBox spacing="6">
+                <Label text="VENUE / MEETING LINK" styleClass="login-label"/>
+                <TextField fx:id="venueField"
+                           promptText="e.g. Room 301, Block A  or  https://meet.google.com/..."
+                           style="-fx-pref-width:9999;"/>
+            </VBox>
+
+            <!-- Row 4 — Instructions -->
+            <VBox spacing="6">
+                <Label text="INSTRUCTIONS (optional)" styleClass="login-label"/>
+                <TextArea fx:id="instructionsField"
+                          promptText="e.g. Bring your laptop, ID card. Dress code: formal."
+                          prefHeight="70" wrapText="true"/>
+            </VBox>
+
+            <Label fx:id="formStatus" text=" "
+                   style="-fx-font-size:12px; -fx-text-fill:#38a169;"/>
+
+            <HBox spacing="12">
+                <Button fx:id="addBtn" text="➕ Add Round" onAction="#handleAddRound"
+                        styleClass="apply-btn"
+                        style="-fx-padding:10 24 10 24; -fx-font-size:13px;"/>
+                <Button text="Clear" onAction="#handleClear"
+                        style="-fx-background-color:#e2e8f0; -fx-text-fill:#4a5568;
+                               -fx-background-radius:6; -fx-padding:10 24 10 24;
+                               -fx-cursor:hand; -fx-font-size:13px;"/>
+            </HBox>
+        </VBox>
+
+        <!-- Existing Rounds -->
+        <VBox styleClass="content-card" spacing="14">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label text="Existing Rounds"
+                       style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"
+                       HBox.hgrow="ALWAYS"/>
+                <Button text="🔍 Load Rounds" onAction="#handleLoadRounds"
+                        style="-fx-background-color:#e2e8f0; -fx-text-fill:#4a5568;
+                               -fx-background-radius:6; -fx-padding:6 16 6 16;
+                               -fx-cursor:hand; -fx-font-size:12px;"/>
+            </HBox>
+
+            <TableView fx:id="roundsTable" prefHeight="280"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colJob" text="Company" prefWidth="140"/>
+                    <TableColumn fx:id="colRound" text="Round" prefWidth="150"/>
+                    <TableColumn fx:id="colDate" text="Date &amp; Time" prefWidth="160"/>
+                    <TableColumn fx:id="colVenue" text="Venue / Link" prefWidth="200"/>
+                    <TableColumn fx:id="colInstructions" text="Instructions" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="tableStatus" text="Select a job and click Load Rounds."
+                   style="-fx-font-size:12px; -fx-text-fill:#718096;"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

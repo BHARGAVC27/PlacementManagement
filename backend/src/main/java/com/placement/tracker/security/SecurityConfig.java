@@ -34,16 +34,23 @@ public class SecurityConfig {
                     "/api/auth/register/student",
                     "/api/auth/login").permitAll()
 
-                // Student
+                // All authenticated users can see jobs
+                .requestMatchers(HttpMethod.GET, "/api/jobs").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/jobs/open").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/jobs/**").authenticated()
+
+                // Student only
                 .requestMatchers(HttpMethod.POST, "/api/applications")
                     .hasRole("STUDENT")
                 .requestMatchers(HttpMethod.GET, "/api/applications/my")
                     .hasRole("STUDENT")
 
-                // Admin
+                // Admin only
                 .requestMatchers(HttpMethod.GET, "/api/applications/job/**")
                     .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
                 .requestMatchers(HttpMethod.POST, "/api/jobs")
+                    .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
+                .requestMatchers(HttpMethod.PUT, "/api/jobs/**")
                     .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
                 .requestMatchers(HttpMethod.DELETE, "/api/jobs/**")
                     .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
@@ -51,6 +58,8 @@ public class SecurityConfig {
                     .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
                 .requestMatchers(HttpMethod.POST, "/api/rounds")
                     .hasAnyRole("ADMIN", "PLACEMENT_OFFICER")
+                .requestMatchers(HttpMethod.GET, "/api/rounds/**")
+                    .authenticated()
 
                 // Swagger
                 .requestMatchers(

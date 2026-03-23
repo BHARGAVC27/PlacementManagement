@@ -8,7 +8,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 import java.net.URI;
 import java.net.http.*;
@@ -52,8 +57,25 @@ public class JobDrivesController implements StudentChildController {
             branches.forEach(b -> list.add(b.asText()));
             return new SimpleStringProperty(String.join(", ", list));
         });
+
+        // Status column with color
         colStatus.setCellValueFactory(d ->
             new SimpleStringProperty(d.getValue().path("status").asText()));
+        colStatus.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) { setText(null); setStyle(""); return; }
+                setText(status);
+                setStyle(switch (status) {
+                    case "OPEN"        -> "-fx-text-fill:#38a169; -fx-font-weight:bold;";
+                    case "ONGOING"     -> "-fx-text-fill:#d69e2e; -fx-font-weight:bold;";
+                    case "RESULTS_OUT" -> "-fx-text-fill:#805ad5; -fx-font-weight:bold;";
+                    case "CLOSED"      -> "-fx-text-fill:#718096; -fx-font-weight:bold;";
+                    default            -> "";
+                });
+            }
+        });
 
         loadJobs();
     }
@@ -91,14 +113,29 @@ public class JobDrivesController implements StudentChildController {
             return;
         }
 
+        // Check job is OPEN before allowing apply
+        String jobStatus = selected.path("status").asText();
+        if (!"OPEN".equals(jobStatus)) {
+            setStatus("❌ Applications are closed for "
+                + selected.path("companyName").asText()
+                + " (Status: " + jobStatus + ")", false);
+            return;
+        }
+
         Long jobId = selected.path("id").asLong();
         String company = selected.path("companyName").asText();
+        String minCgpa = selected.path("minCgpa").asText();
+        String branches = "";
+        List<String> branchList = new ArrayList<>();
+        selected.path("allowedBranches").forEach(b -> branchList.add(b.asText()));
+        if (!branchList.isEmpty()) branches = "\nAllowed Branches: " + String.join(", ", branchList);
 
-        // Confirm dialog
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Apply for Job");
         confirm.setHeaderText("Apply to " + company + "?");
-        confirm.setContentText("This will submit your application for this job drive.");
+        confirm.setContentText("Min CGPA required: " + minCgpa
+            + branches
+            + "\n\nMake sure you meet the criteria before applying.");
 
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
@@ -107,7 +144,6 @@ public class JobDrivesController implements StudentChildController {
                 new Thread(() -> {
                     try {
                         String body = "{\"jobPostId\":" + jobId + "}";
-
                         HttpClient client = HttpClient.newHttpClient();
                         HttpRequest request = HttpRequest.newBuilder()
                             .uri(URI.create("http://localhost:8080/api/applications"))
@@ -122,9 +158,14 @@ public class JobDrivesController implements StudentChildController {
                         Platform.runLater(() -> {
                             if (response.statusCode() == 200) {
                                 setStatus("✅ Successfully applied to " + company + "!", true);
-                            } else if (response.statusCode() == 409
-                                    || response.body().contains("already")) {
+                            } else if (response.body().contains("already")) {
                                 setStatus("⚠️ You have already applied to " + company, false);
+                            } else if (response.body().contains("not eligible")
+                                    || response.body().contains("eligible")) {
+                                setStatus("❌ You do not meet the eligibility criteria for "
+                                    + company + ". Check CGPA, percentages and branch.", false);
+                            } else if (response.body().contains("closed")) {
+                                setStatus("❌ Applications are now closed for " + company, false);
                             } else {
                                 setStatus("❌ Error: " + response.body(), false);
                             }

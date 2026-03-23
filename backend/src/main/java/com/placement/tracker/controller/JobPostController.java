@@ -3,6 +3,7 @@ package com.placement.tracker.controller;
 import com.placement.tracker.dto.EligibleStudentResponse;
 import com.placement.tracker.dto.JobPostRequest;
 import com.placement.tracker.dto.JobPostResponse;
+import com.placement.tracker.enums.JobStatus;
 import com.placement.tracker.service.JobPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,14 +11,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -30,10 +24,18 @@ public class JobPostController {
         this.jobPostService = jobPostService;
     }
 
+    // Returns ALL jobs with their current status
     @GetMapping
-    @Operation(summary = "Get all active jobs")
+    @Operation(summary = "Get all jobs")
     public ResponseEntity<List<JobPostResponse>> getAll() {
         return ResponseEntity.ok(jobPostService.getAll());
+    }
+
+    // Returns only OPEN jobs for student browsing
+    @GetMapping("/open")
+    @Operation(summary = "Get open jobs for students")
+    public ResponseEntity<List<JobPostResponse>> getOpen() {
+        return ResponseEntity.ok(jobPostService.getOpenJobs());
     }
 
     @PostMapping
@@ -56,6 +58,15 @@ public class JobPostController {
             @PathVariable Long id,
             @RequestBody JobPostRequest request) {
         return ResponseEntity.ok(jobPostService.update(id, request));
+    }
+
+    // Admin updates job status (OPEN -> ONGOING -> RESULTS_OUT -> CLOSED)
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Update job status")
+    public ResponseEntity<JobPostResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam JobStatus status) {
+        return ResponseEntity.ok(jobPostService.updateStatus(id, status));
     }
 
     @GetMapping("/{id}/eligible-students")

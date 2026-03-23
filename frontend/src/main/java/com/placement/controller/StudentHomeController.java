@@ -8,7 +8,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 import java.net.URI;
 import java.net.http.*;
@@ -49,8 +54,25 @@ public class StudentHomeController implements StudentChildController {
             new SimpleStringProperty(d.getValue().path("packageLPA").asText() + " LPA"));
         colDeadline.setCellValueFactory(d ->
             new SimpleStringProperty(d.getValue().path("deadline").asText()));
+
+        // Status column with color
         colStatus.setCellValueFactory(d ->
             new SimpleStringProperty(d.getValue().path("status").asText()));
+        colStatus.setCellFactory(col -> new javafx.scene.control.TableCell<>() {
+            @Override
+            protected void updateItem(String status, boolean empty) {
+                super.updateItem(status, empty);
+                if (empty || status == null) { setText(null); setStyle(""); return; }
+                setText(status);
+                setStyle(switch (status) {
+                    case "OPEN"        -> "-fx-text-fill:#38a169; -fx-font-weight:bold;";
+                    case "ONGOING"     -> "-fx-text-fill:#d69e2e; -fx-font-weight:bold;";
+                    case "RESULTS_OUT" -> "-fx-text-fill:#805ad5; -fx-font-weight:bold;";
+                    case "CLOSED"      -> "-fx-text-fill:#718096; -fx-font-weight:bold;";
+                    default            -> "";
+                });
+            }
+        });
 
         loadJobs();
         loadMyApplicationStats();
@@ -134,6 +156,15 @@ public class StudentHomeController implements StudentChildController {
             return;
         }
 
+        // Check job is still OPEN
+        String jobStatus = selected.path("status").asText();
+        if (!"OPEN".equals(jobStatus)) {
+            setStatus("❌ Applications are closed for "
+                + selected.path("companyName").asText()
+                + " (Status: " + jobStatus + ")", false);
+            return;
+        }
+
         Long jobId = selected.path("id").asLong();
         String company = selected.path("companyName").asText();
 
@@ -165,6 +196,11 @@ public class StudentHomeController implements StudentChildController {
                                 loadMyApplicationStats();
                             } else if (response.body().contains("already")) {
                                 setStatus("⚠️ Already applied to " + company, false);
+                            } else if (response.body().contains("not eligible")) {
+                                setStatus("❌ You do not meet the eligibility criteria for "
+                                    + company, false);
+                            } else if (response.body().contains("closed")) {
+                                setStatus("❌ Applications are closed for " + company, false);
                             } else {
                                 setStatus("❌ Error: " + response.body(), false);
                             }

@@ -17,6 +17,8 @@ public class AdminDashboardController {
     @FXML private Button btnDashboard;
     @FXML private Button btnPostJob;
     @FXML private Button btnManageJobs;
+    @FXML private Button btnResults;
+    @FXML private Button btnSchedule;
     @FXML private Button btnStudents;
     @FXML private Button btnReports;
 
@@ -28,7 +30,8 @@ public class AdminDashboardController {
     }
 
     private void setActive(Button active) {
-        Button[] all = {btnDashboard, btnPostJob, btnManageJobs, btnStudents, btnReports};
+        Button[] all = {btnDashboard, btnPostJob, btnManageJobs,
+                        btnResults, btnSchedule, btnStudents, btnReports};
         for (Button b : all) {
             b.getStyleClass().removeAll("sidebar-btn-active");
             if (!b.getStyleClass().contains("sidebar-btn"))
@@ -51,32 +54,37 @@ public class AdminDashboardController {
         }
     }
 
-    @FXML
-    public void showDashboard() {
+    @FXML public void showDashboard() {
         setActive(btnDashboard);
         loadView("/com/placement/fxml/admin-home.fxml");
     }
 
-    @FXML
-    public void showPostJob() {
+    @FXML public void showPostJob() {
         setActive(btnPostJob);
         loadView("/com/placement/fxml/post-job.fxml");
     }
 
-    @FXML
-    public void showManageJobs() {
+    @FXML public void showManageJobs() {
         setActive(btnManageJobs);
         loadView("/com/placement/fxml/manage-jobs.fxml");
     }
 
-    @FXML
-    public void showStudents() {
+    @FXML public void showUpdateResults() {
+        setActive(btnResults);
+        loadView("/com/placement/fxml/update-results.fxml");
+    }
+
+    @FXML public void showScheduleRounds() {
+        setActive(btnSchedule);
+        loadView("/com/placement/fxml/schedule-rounds.fxml");
+    }
+
+    @FXML public void showStudents() {
         setActive(btnStudents);
         loadView("/com/placement/fxml/student-database.fxml");
     }
 
-    @FXML
-    public void showReports() {
+    @FXML public void showReports() {
         setActive(btnReports);
         loadView("/com/placement/fxml/reports.fxml");
     }

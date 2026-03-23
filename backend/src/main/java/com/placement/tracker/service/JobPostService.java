@@ -62,8 +62,18 @@ public class JobPostService {
         return toJobPostResponse(saved);
     }
 
+    // Returns ALL jobs so students can see status (OPEN, ONGOING, etc.)
     @Transactional(readOnly = true)
     public List<JobPostResponse> getAll() {
+        return jobPostRepository.findAll()
+                .stream()
+                .map(this::toJobPostResponse)
+                .toList();
+    }
+
+    // Returns only OPEN jobs for student application
+    @Transactional(readOnly = true)
+    public List<JobPostResponse> getOpenJobs() {
         return jobPostRepository.findByStatus(JobStatus.OPEN)
                 .stream()
                 .map(this::toJobPostResponse)
@@ -75,6 +85,15 @@ public class JobPostService {
         JobPost jobPost = jobPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Job post not found"));
         return toJobPostResponse(jobPost);
+    }
+
+    // Updates job status — used by admin to close applications, move to OA, etc.
+    public JobPostResponse updateStatus(Long id, JobStatus status) {
+        JobPost existing = jobPostRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Job post not found"));
+        existing.setStatus(status);
+        JobPost saved = jobPostRepository.save(existing);
+        return toJobPostResponse(saved);
     }
 
     @Transactional(readOnly = true)
