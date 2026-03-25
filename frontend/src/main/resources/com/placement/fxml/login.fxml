@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.placement.controller.LoginController"
+           styleClass="login-root"
+           stylesheets="@../styles/app.css">
+
+    <VBox alignment="CENTER" spacing="0">
+
+        <!-- Logo area -->
+        <VBox alignment="CENTER" spacing="6" style="-fx-padding: 0 0 30 0;">
+            <Rectangle width="48" height="5" arcWidth="4" arcHeight="4" styleClass="accent-bar"/>
+            <Label text="CAMPUS PLACEMENT" style="-fx-font-size:11px; -fx-text-fill:#a0aec0; -fx-letter-spacing:3;"/>
+            <Label text="System" style="-fx-font-size:32px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+        </VBox>
+
+        <!-- Card -->
+        <VBox styleClass="login-card" spacing="16" alignment="CENTER_LEFT" maxWidth="420">
+
+            <Label text="Welcome back" styleClass="login-title"/>
+            <Label text="Sign in to your account to continue" styleClass="login-subtitle"
+                   style="-fx-padding: 0 0 10 0;"/>
+
+            <Label text="EMAIL ADDRESS" styleClass="login-label"/>
+            <TextField fx:id="emailField" promptText="you@university.edu"
+                       styleClass="login-input"/>
+
+            <Label text="PASSWORD" styleClass="login-label"/>
+            <PasswordField fx:id="passwordField" promptText="••••••••"
+                           styleClass="login-input"/>
+
+            <Label fx:id="errorLabel" styleClass="error-label" text=" "/>
+
+            <Button text="Sign In →" onAction="#handleLogin"
+                    styleClass="login-btn"/>
+
+            <Button text="Don't have an account? Sign Up"
+              onAction="#goToSignup"
+              style="-fx-background-color:transparent; -fx-text-fill:#a0aec0;
+                    -fx-font-size:11px; -fx-cursor:hand; -fx-border-color:transparent;
+                    -fx-padding: 8 0 0 0;"/>
+        </VBox>
+
+    </VBox>
+</StackPane>

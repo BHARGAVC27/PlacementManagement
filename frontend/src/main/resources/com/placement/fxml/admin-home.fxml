@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.AdminHomeController"
+            style="-fx-background-color:#f0f4f8; -fx-border-color:transparent; -fx-background:#f0f4f8;"
+            stylesheets="@../styles/app.css">
+
+    <VBox styleClass="main-content" spacing="24">
+
+        <VBox spacing="4">
+            <Label text="Admin Dashboard" styleClass="page-title"/>
+            <Label text="Manage placements, jobs and students." styleClass="page-subtitle"/>
+        </VBox>
+
+        <HBox spacing="16">
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statTotalJobs" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#e94560;"/>
+                <Label text="Total Jobs" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statTotalStudents" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#3182ce;"/>
+                <Label text="Students" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statPlaced" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#38a169;"/>
+                <Label text="Placed" styleClass="stat-label"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="6">
+                <Label fx:id="statOngoing" text="—" styleClass="stat-number"
+                       style="-fx-text-fill:#d69e2e;"/>
+                <Label text="Ongoing Drives" styleClass="stat-label"/>
+            </VBox>
+        </HBox>
+
+        <VBox styleClass="content-card" spacing="14">
+            <Label text="Recent Job Drives" styleClass="page-title"
+                   style="-fx-font-size:16px;"/>
+            <TableView fx:id="jobTable" prefHeight="320"
+                       style="-fx-background-color:transparent;">
+                <columns>
+                    <TableColumn fx:id="colCompany" text="Company" prefWidth="160"/>
+                    <TableColumn fx:id="colRole" text="Role" prefWidth="160"/>
+                    <TableColumn fx:id="colPackage" text="Package (LPA)" prefWidth="120"/>
+                    <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="120"/>
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

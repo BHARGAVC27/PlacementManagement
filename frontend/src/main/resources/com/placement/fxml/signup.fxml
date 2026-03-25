@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="false"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.SignupController"
+            style="-fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e, #0f3460);
+                   -fx-border-color:transparent;"
+            stylesheets="@../styles/app.css">
+
+    <VBox alignment="CENTER" spacing="20"
+          style="-fx-padding: 30 0 30 0;
+                 -fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e, #0f3460);"
+          minHeight="700">
+
+        <!-- Title -->
+        <VBox alignment="CENTER" spacing="6">
+            <Pane style="-fx-background-color:#e94560; -fx-pref-height:4; -fx-min-height:4;
+                         -fx-pref-width:48; -fx-background-radius:2;"/>
+            <Label text="CAMPUS PLACEMENT"
+                   style="-fx-font-size:11px; -fx-text-fill:#a0aec0;"/>
+            <Label text="Create Account"
+                   style="-fx-font-size:28px; -fx-font-weight:bold; -fx-text-fill:white;"/>
+        </VBox>
+
+        <!-- Card -->
+        <VBox styleClass="login-card" spacing="14" maxWidth="500"
+              style="-fx-background-color:white; -fx-background-radius:16;
+                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.4),30,0,0,10);
+                     -fx-padding: 36 44 36 44;">
+
+            <Label text="Student Registration"
+                   style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#1a1a2e;"/>
+            <Label text="Fill in all details to create your account."
+                   style="-fx-font-size:12px; -fx-text-fill:#718096; -fx-padding:0 0 4 0;"/>
+
+            <!-- Row 1 — Name -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="FIRST NAME" styleClass="login-label"/>
+                    <TextField fx:id="firstNameField" promptText="e.g. Ravi"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="LAST NAME" styleClass="login-label"/>
+                    <TextField fx:id="lastNameField" promptText="e.g. Kumar"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 2 — USN + Phone -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="USN / SRN" styleClass="login-label"/>
+                    <TextField fx:id="usnField" promptText="e.g. 1RV21CS001"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="PHONE NUMBER" styleClass="login-label"/>
+                    <TextField fx:id="phoneField" promptText="e.g. 9876543210"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 3 — Email -->
+            <VBox spacing="4">
+                <Label text="EMAIL ADDRESS" styleClass="login-label"/>
+                <TextField fx:id="emailField" promptText="you@university.edu"
+                           styleClass="login-input"/>
+            </VBox>
+
+            <!-- Row 4 — Password -->
+            <VBox spacing="4">
+                <Label text="PASSWORD" styleClass="login-label"/>
+                <PasswordField fx:id="passwordField" promptText="Min 6 characters"
+                               styleClass="login-input"/>
+            </VBox>
+
+            <!-- Row 5 — Branch + Backlogs -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="BRANCH" styleClass="login-label"/>
+                    <ComboBox fx:id="branchCombo"
+                              style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                     -fx-border-color:#e2e8f0; -fx-border-radius:8;
+                                     -fx-border-width:1.5; -fx-background-radius:8;"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="ACTIVE BACKLOGS" styleClass="login-label"/>
+                    <TextField fx:id="backlogsField" promptText="0"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 6 — Academic -->
+            <HBox spacing="12">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="CURRENT CGPA" styleClass="login-label"/>
+                    <TextField fx:id="cgpaField" promptText="e.g. 8.5"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="10TH %" styleClass="login-label"/>
+                    <TextField fx:id="tenthField" promptText="e.g. 85.0"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="12TH %" styleClass="login-label"/>
+                    <TextField fx:id="twelfthField" promptText="e.g. 80.0"
+                               style="-fx-pref-width:9999; -fx-background-color:#f7fafc;
+                                      -fx-background-radius:8; -fx-border-color:#e2e8f0;
+                                      -fx-border-radius:8; -fx-border-width:1.5;
+                                      -fx-padding:8 12 8 12;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Row 7 — Resume -->
+            <VBox spacing="4">
+                <Label text="RESUME URL (optional)" styleClass="login-label"/>
+                <TextField fx:id="resumeField" promptText="https://drive.google.com/..."
+                           styleClass="login-input"/>
+            </VBox>
+
+            <!-- Error -->
+            <Label fx:id="errorLabel" text=" " styleClass="error-label"/>
+
+            <!-- Buttons -->
+            <Button text="Create Account →" onAction="#handleSignup"
+                    styleClass="login-btn"/>
+
+            <Button text="Already have an account? Sign In"
+                    onAction="#goToLogin"
+                    style="-fx-background-color:transparent; -fx-text-fill:#718096;
+                           -fx-font-size:12px; -fx-cursor:hand;
+                           -fx-border-color:transparent; -fx-pref-width:400;"/>
+
+        </VBox>
+    </VBox>
+</ScrollPane>

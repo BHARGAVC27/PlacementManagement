@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.placement.controller.StudentDashboardController"
+            stylesheets="@../styles/app.css">
+
+    <left>
+        <VBox styleClass="sidebar">
+            <Label text="PLACEMENT" styleClass="sidebar-title"/>
+            <Label fx:id="userEmailLabel" text="student@uni.edu" styleClass="sidebar-subtitle"/>
+            <Pane style="-fx-background-color:#2d3748; -fx-pref-height:1; -fx-min-height:1; -fx-max-height:1;" prefWidth="220"/>
+            <Button text="🏠  Dashboard" onAction="#showDashboard" styleClass="sidebar-btn" fx:id="btnDashboard"/>
+            <Button text="💼  Job Drives" onAction="#showJobDrives" styleClass="sidebar-btn" fx:id="btnJobs"/>
+            <Button text="📋  My Applications" onAction="#showApplications" styleClass="sidebar-btn" fx:id="btnApplications"/>
+            <Button text="📅  Interview Schedule" onAction="#showInterviews" styleClass="sidebar-btn" fx:id="btnInterviews"/>
+            <Button text="👤  My Profile" onAction="#showProfile" styleClass="sidebar-btn" fx:id="btnProfile"/>
+            <Pane VBox.vgrow="ALWAYS"/>
+            <Button text="⇠  Logout" onAction="#handleLogout" styleClass="sidebar-logout"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea"/>
+    </center>
+
+</BorderPane>
