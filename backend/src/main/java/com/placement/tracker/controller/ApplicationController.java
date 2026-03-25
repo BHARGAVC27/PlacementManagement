@@ -36,7 +36,8 @@ public class ApplicationController {
             @AuthenticationPrincipal UserDetails principal,
             @RequestBody ApplicationRequest request) {
         return ResponseEntity.ok(
-            applicationService.apply(principal.getUsername(), request.jobPostId()));
+            applicationService.apply(
+                principal.getUsername(), request.jobPostId()));
     }
 
     @GetMapping("/my")
@@ -58,7 +59,9 @@ public class ApplicationController {
     @Operation(summary = "Update application status")
     public ResponseEntity<ApplicationResponse> updateStatus(
             @PathVariable Long id,
-            @RequestParam AppStatus status) {
-        return ResponseEntity.ok(applicationService.updateStatus(id, status));
+            @RequestParam AppStatus status,
+            @RequestParam(required = false) String remarks) {
+        return ResponseEntity.ok(
+            applicationService.updateStatus(id, status, remarks));
     }
-}   
+}

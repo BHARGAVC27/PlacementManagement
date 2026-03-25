@@ -42,7 +42,8 @@ public class UpdateResultsController implements AdminChildController {
     @FXML private Label actionStatus;
 
     private AdminDashboardController parentController;
-    private final ObservableList<ApplicantRow> rows = FXCollections.observableArrayList();
+    private final ObservableList<ApplicantRow> rows =
+        FXCollections.observableArrayList();
     private final DateTimeFormatter fmt =
         DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a");
 
@@ -93,7 +94,8 @@ public class UpdateResultsController implements AdminChildController {
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty) { setGraphic(null); return; }
-                ApplicantRow row = getTableView().getItems().get(getIndex());
+                ApplicantRow row =
+                    getTableView().getItems().get(getIndex());
                 setGraphic(buildActionButtons(row));
             }
         });
@@ -182,7 +184,8 @@ public class UpdateResultsController implements AdminChildController {
                     )));
                     Platform.runLater(() -> {
                         jobCombo.getItems().setAll(items);
-                        if (!items.isEmpty()) jobCombo.setValue(items.get(0));
+                        if (!items.isEmpty())
+                            jobCombo.setValue(items.get(0));
                     });
                 }
             } catch (Exception e) {
@@ -209,7 +212,8 @@ public class UpdateResultsController implements AdminChildController {
 
                 // Load applications
                 HttpRequest appReq = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/applications/job/"
+                    .uri(URI.create(
+                        "http://localhost:8080/api/applications/job/"
                         + selected.jobId))
                     .header("Authorization",
                         "Bearer " + SessionManager.getInstance().getToken())
@@ -219,7 +223,8 @@ public class UpdateResultsController implements AdminChildController {
 
                 // Load rounds
                 HttpRequest roundReq = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/rounds/job/"
+                    .uri(URI.create(
+                        "http://localhost:8080/api/rounds/job/"
                         + selected.jobId))
                     .header("Authorization",
                         "Bearer " + SessionManager.getInstance().getToken())
@@ -229,7 +234,8 @@ public class UpdateResultsController implements AdminChildController {
 
                 // Load eligible students for profile details
                 HttpRequest eligReq = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/jobs/"
+                    .uri(URI.create(
+                        "http://localhost:8080/api/jobs/"
                         + selected.jobId + "/eligible-students"))
                     .header("Authorization",
                         "Bearer " + SessionManager.getInstance().getToken())
@@ -243,11 +249,12 @@ public class UpdateResultsController implements AdminChildController {
                         ? mapper.readTree(roundRes.body())
                         : mapper.createArrayNode();
 
-                    // Build profile map
+                    // Profile map
                     Map<Long, JsonNode> profileMap = new HashMap<>();
                     if (eligRes.statusCode() == 200) {
                         mapper.readTree(eligRes.body()).forEach(e ->
-                            profileMap.put(e.path("studentId").asLong(), e));
+                            profileMap.put(
+                                e.path("studentId").asLong(), e));
                     }
 
                     // exactCounts — where each student is RIGHT NOW
@@ -255,8 +262,8 @@ public class UpdateResultsController implements AdminChildController {
                     for (String s : PIPELINE) exactCounts.put(s, 0);
                     exactCounts.put("REJECTED", 0);
 
-                    // funnelCounts — how many REACHED each stage
-                    // (includes everyone who passed through)
+                    // funnelCounts — highest stage each student reached
+                    // NEVER decreases even after rejection
                     Map<String, Integer> funnelCounts = new LinkedHashMap<>();
                     for (String s : PIPELINE) funnelCounts.put(s, 0);
                     funnelCounts.put("REJECTED", 0);
@@ -268,26 +275,57 @@ public class UpdateResultsController implements AdminChildController {
                         JsonNode profile = profileMap.get(sid);
                         String status = app.path("currentStatus").asText();
 
-                        // Count exact current position
+                        // remarks field is now returned from API
+                        String remarks = app.path("remarks").asText();
+
+                        // Track exact current position
                         exactCounts.merge(status, 1, Integer::sum);
 
-                        // Funnel: count in all stages reached
                         if (!"REJECTED".equals(status)) {
+                            // Not rejected — count in all stages reached
                             int currentIndex = PIPELINE.indexOf(status);
-                            for (int pi = 0; pi <= currentIndex
+                            for (int pi = 0;
+                                    pi <= currentIndex
                                     && pi < PIPELINE.size(); pi++) {
                                 funnelCounts.merge(
                                     PIPELINE.get(pi), 1, Integer::sum);
                             }
                         } else {
-                            // Rejected students only counted in Applied
-                            funnelCounts.merge("APPLIED", 1, Integer::sum);
+                            // Rejected — use remarks to find highest
+                            // stage they reached before rejection
+                            // remarks = "REJECTED_FROM_SHORTLISTED_OA" etc.
+                            int highestReached =
+                                PIPELINE.indexOf("APPLIED");
+
+                            if (remarks.contains("INTERVIEW_SCHEDULED")) {
+                                highestReached =
+                                    PIPELINE.indexOf("INTERVIEW_SCHEDULED");
+                            } else if (remarks.contains("OA_CLEARED")) {
+                                highestReached =
+                                    PIPELINE.indexOf("OA_CLEARED");
+                            } else if (remarks.contains("SHORTLISTED_OA")) {
+                                highestReached =
+                                    PIPELINE.indexOf("SHORTLISTED_OA");
+                            }
+
+                            // Count in all stages up to highest reached
+                            for (int pi = 0;
+                                    pi <= highestReached
+                                    && pi < PIPELINE.size(); pi++) {
+                                funnelCounts.merge(
+                                    PIPELINE.get(pi), 1, Integer::sum);
+                            }
+
+                            // Also count in rejected
+                            funnelCounts.merge("REJECTED", 1,
+                                Integer::sum);
                         }
 
                         rowList.add(new ApplicantRow(
                             app.path("id").asLong(), sid,
                             profile != null
-                                ? profile.path("firstName").asText() + " "
+                                ? profile.path("firstName").asText()
+                                    + " "
                                     + profile.path("lastName").asText()
                                 : "Student #" + sid,
                             profile != null
@@ -295,38 +333,41 @@ public class UpdateResultsController implements AdminChildController {
                             profile != null
                                 ? profile.path("branch").asText() : "—",
                             profile != null
-                                ? profile.path("currentCgpa").asText() : "—",
+                                ? profile.path("currentCgpa").asText()
+                                : "—",
                             status
                         ));
                     });
 
-                    // Active stage = earliest stage with students pending
-                    String activeStage = determineActiveStage(exactCounts);
+                    // Active = earliest stage with students pending
+                    String activeStage =
+                        determineActiveStage(exactCounts);
 
-                    // Find matching round details
+                    // Find matching round
                     JsonNode matchingRound =
                         findRoundForStage(roundsArr, activeStage);
 
                     Platform.runLater(() -> {
-                        // Build funnel pipeline bar
                         buildPipelineBar(funnelCounts, activeStage);
 
-                        // Round details
                         if (matchingRound != null) {
                             roundDetailsBox.setVisible(true);
                             roundDetailsBox.setManaged(true);
                             roundName.setText("📋 "
-                                + matchingRound.path("roundName").asText());
+                                + matchingRound
+                                    .path("roundName").asText());
                             try {
                                 LocalDateTime dt = LocalDateTime.parse(
                                     matchingRound
                                         .path("scheduledTime").asText());
-                                roundTime.setText("🕐 " + dt.format(fmt));
+                                roundTime.setText(
+                                    "🕐 " + dt.format(fmt));
                             } catch (Exception ex) {
                                 roundTime.setText("");
                             }
                             roundVenue.setText("📍 "
-                                + matchingRound.path("venueOrLink").asText());
+                                + matchingRound
+                                    .path("venueOrLink").asText());
                             String inst = matchingRound
                                 .path("instructions").asText();
                             roundInstructions.setText(
@@ -337,14 +378,15 @@ public class UpdateResultsController implements AdminChildController {
                         }
 
                         stageTitle.setText(getStageName(activeStage));
-                        stageBadge.setText(rowList.size() + " applicants total");
-                        stageDesc.setText(
-                            getStageDescription(activeStage, exactCounts));
+                        stageBadge.setText(
+                            rowList.size() + " applicants total");
+                        stageDesc.setText(getStageDescription(
+                            activeStage, exactCounts));
 
-                        // Show all students sorted by pipeline stage
                         rows.setAll(rowList.stream()
                             .sorted(Comparator.comparingInt(r -> {
-                                int idx = PIPELINE.indexOf(r.currentStatus);
+                                int idx =
+                                    PIPELINE.indexOf(r.currentStatus);
                                 return idx == -1 ? 999 : -idx;
                             }))
                             .toList());
@@ -358,7 +400,8 @@ public class UpdateResultsController implements AdminChildController {
                             + offered + " offered | "
                             + rejected + " rejected");
                         actionStatus.setStyle(
-                            "-fx-text-fill:#718096; -fx-font-size:12px;");
+                            "-fx-text-fill:#718096;"
+                            + "-fx-font-size:12px;");
                     });
                 }
             } catch (Exception e) {
@@ -391,35 +434,41 @@ public class UpdateResultsController implements AdminChildController {
             int count = funnelCounts.getOrDefault(stage, 0);
 
             boolean isActive = stage.equals(active);
-            boolean isCompleted = PIPELINE.indexOf(stage)
-                < PIPELINE.indexOf(active);
-            boolean isOffered = "OFFERED".equals(stage) && count > 0;
+            boolean isCompleted =
+                PIPELINE.indexOf(stage) < PIPELINE.indexOf(active);
+            boolean isOffered =
+                "OFFERED".equals(stage) && count > 0;
 
             VBox box = new VBox(4);
             box.setAlignment(Pos.CENTER);
 
             if (isOffered) {
                 box.setStyle(
-                    "-fx-padding:10 18 10 18; -fx-background-radius:8;"
+                    "-fx-padding:10 18 10 18;"
+                    + "-fx-background-radius:8;"
                     + "-fx-background-color:#c6f6d5;");
             } else if (isActive) {
                 box.setStyle(
-                    "-fx-padding:10 18 10 18; -fx-background-radius:8;"
+                    "-fx-padding:10 18 10 18;"
+                    + "-fx-background-radius:8;"
                     + "-fx-background-color:#0f3460;"
                     + "-fx-effect:dropshadow(gaussian,"
                         + "rgba(0,0,0,0.25),8,0,0,2);");
             } else if (isCompleted) {
                 box.setStyle(
-                    "-fx-padding:10 18 10 18; -fx-background-radius:8;"
+                    "-fx-padding:10 18 10 18;"
+                    + "-fx-background-radius:8;"
                     + "-fx-background-color:#ebf8ff;");
             } else {
                 box.setStyle(
-                    "-fx-padding:10 18 10 18; -fx-background-radius:8;"
+                    "-fx-padding:10 18 10 18;"
+                    + "-fx-background-radius:8;"
                     + "-fx-background-color:#f7fafc;");
             }
 
             Label countLabel = new Label(String.valueOf(count));
-            countLabel.setStyle("-fx-font-size:22px; -fx-font-weight:bold;"
+            countLabel.setStyle(
+                "-fx-font-size:22px; -fx-font-weight:bold;"
                 + (isOffered ? "-fx-text-fill:#276749;"
                    : isActive ? "-fx-text-fill:white;"
                    : isCompleted ? "-fx-text-fill:#2b6cb0;"
@@ -437,7 +486,8 @@ public class UpdateResultsController implements AdminChildController {
 
             if (i < stages.length - 1) {
                 Label arrow = new Label(" → ");
-                arrow.setStyle("-fx-text-fill:#cbd5e0; -fx-font-size:16px;");
+                arrow.setStyle(
+                    "-fx-text-fill:#cbd5e0; -fx-font-size:16px;");
                 pipelineBar.getChildren().add(arrow);
             }
         }
@@ -446,7 +496,8 @@ public class UpdateResultsController implements AdminChildController {
         int rejected = funnelCounts.getOrDefault("REJECTED", 0);
         if (rejected > 0) {
             Label sep = new Label("    |    ");
-            sep.setStyle("-fx-text-fill:#e2e8f0; -fx-font-size:18px;");
+            sep.setStyle(
+                "-fx-text-fill:#e2e8f0; -fx-font-size:18px;");
             VBox rejBox = new VBox(4);
             rejBox.setAlignment(Pos.CENTER);
             rejBox.setStyle(
@@ -458,21 +509,23 @@ public class UpdateResultsController implements AdminChildController {
                 "-fx-font-size:22px; -fx-font-weight:bold;"
                 + "-fx-text-fill:#e94560;");
             Label rl = new Label("Rejected");
-            rl.setStyle("-fx-font-size:10px; -fx-text-fill:#e94560;");
+            rl.setStyle(
+                "-fx-font-size:10px; -fx-text-fill:#e94560;");
             rejBox.getChildren().addAll(rc, rl);
             pipelineBar.getChildren().addAll(sep, rejBox);
         }
     }
 
-    private String determineActiveStage(Map<String, Integer> exactCounts) {
-        // Active = earliest stage with students still pending
+    private String determineActiveStage(
+            Map<String, Integer> exactCounts) {
         for (String stage : PIPELINE) {
             if (!"OFFERED".equals(stage)
                     && exactCounts.getOrDefault(stage, 0) > 0) {
                 return stage;
             }
         }
-        if (exactCounts.getOrDefault("OFFERED", 0) > 0) return "OFFERED";
+        if (exactCounts.getOrDefault("OFFERED", 0) > 0)
+            return "OFFERED";
         return "APPLIED";
     }
 
@@ -486,7 +539,8 @@ public class UpdateResultsController implements AdminChildController {
         };
         if (keyword == null) return null;
         for (JsonNode r : rounds) {
-            if (r.path("roundName").asText().contains(keyword)) return r;
+            if (r.path("roundName").asText().contains(keyword))
+                return r;
         }
         return rounds.get(0);
     }
@@ -495,47 +549,67 @@ public class UpdateResultsController implements AdminChildController {
         return switch (stage) {
             case "APPLIED"             -> "📝 Applications Received";
             case "SHORTLISTED_OA"      -> "⭐ OA Round — Mark Results";
-            case "OA_CLEARED"          -> "🎯 OA Cleared — Move to Interview";
-            case "INTERVIEW_SCHEDULED" -> "📅 Interview Round — Final Decisions";
+            case "OA_CLEARED"          ->
+                "🎯 OA Cleared — Move to Interview";
+            case "INTERVIEW_SCHEDULED" ->
+                "📅 Interview Round — Final Decisions";
             case "OFFERED"             -> "🎉 Placement Complete";
             default                    -> stage;
         };
     }
 
     private String getStageDescription(String stage,
-                                        Map<String, Integer> exactCounts) {
+            Map<String, Integer> exactCounts) {
         return switch (stage) {
             case "APPLIED" ->
-                exactCounts.get("APPLIED") + " student(s) applied. "
+                exactCounts.get("APPLIED")
+                + " student(s) applied. "
                 + "Go to Manage Jobs to shortlist for OA.";
             case "SHORTLISTED_OA" ->
-                exactCounts.get("SHORTLISTED_OA") + " student(s) shortlisted. "
+                exactCounts.get("SHORTLISTED_OA")
+                + " student(s) shortlisted. "
                 + "Mark who cleared the OA below.";
             case "OA_CLEARED" ->
-                exactCounts.get("OA_CLEARED") + " student(s) cleared OA. "
+                exactCounts.get("OA_CLEARED")
+                + " student(s) cleared OA. "
                 + "Move them to Interview round.";
             case "INTERVIEW_SCHEDULED" ->
-                exactCounts.get("INTERVIEW_SCHEDULED") + " student(s) in interview. "
+                exactCounts.get("INTERVIEW_SCHEDULED")
+                + " student(s) in interview. "
                 + "Make final offer or reject decisions.";
             case "OFFERED" ->
-                exactCounts.get("OFFERED") + " student(s) offered! "
+                exactCounts.get("OFFERED")
+                + " student(s) offered! "
                 + "Placement drive complete.";
             default -> "";
         };
     }
 
-    private void updateStudentStatus(ApplicantRow row, String newStatus) {
+    private void updateStudentStatus(ApplicantRow row,
+                                      String newStatus) {
         actionStatus.setText("Updating " + row.name + "...");
-        actionStatus.setStyle("-fx-text-fill:#3182ce; -fx-font-size:12px;");
+        actionStatus.setStyle(
+            "-fx-text-fill:#3182ce; -fx-font-size:12px;");
 
         new Thread(() -> {
             try {
                 HttpClient client = HttpClient.newHttpClient();
+
+                // Store previous stage in remarks when rejecting
+                // This is how funnel knows where they were rejected from
+                String url =
+                    "http://localhost:8080/api/applications/"
+                    + row.appId + "/status?status=" + newStatus;
+                if ("REJECTED".equals(newStatus)) {
+                    url += "&remarks=REJECTED_FROM_"
+                        + row.currentStatus;
+                }
+
                 HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/applications/"
-                        + row.appId + "/status?status=" + newStatus))
+                    .uri(URI.create(url))
                     .header("Authorization",
-                        "Bearer " + SessionManager.getInstance().getToken())
+                        "Bearer "
+                        + SessionManager.getInstance().getToken())
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 
@@ -547,19 +621,24 @@ public class UpdateResultsController implements AdminChildController {
                         actionStatus.setText("✅ " + row.name
                             + " → " + formatStatus(newStatus));
                         actionStatus.setStyle(
-                            "-fx-text-fill:#38a169; -fx-font-size:12px;");
+                            "-fx-text-fill:#38a169;"
+                            + "-fx-font-size:12px;");
                         handleLoadPipeline();
                     } else {
-                        actionStatus.setText("❌ Error updating status.");
+                        actionStatus.setText(
+                            "❌ Error updating status.");
                         actionStatus.setStyle(
-                            "-fx-text-fill:#e94560; -fx-font-size:12px;");
+                            "-fx-text-fill:#e94560;"
+                            + "-fx-font-size:12px;");
                     }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    actionStatus.setText("❌ Cannot connect to server.");
+                    actionStatus.setText(
+                        "❌ Cannot connect to server.");
                     actionStatus.setStyle(
-                        "-fx-text-fill:#e94560; -fx-font-size:12px;");
+                        "-fx-text-fill:#e94560;"
+                        + "-fx-font-size:12px;");
                 });
                 e.printStackTrace();
             }
@@ -615,8 +694,9 @@ public class UpdateResultsController implements AdminChildController {
         public final String cgpa;
         public String currentStatus;
 
-        public ApplicantRow(Long appId, Long studentId, String name,
-                            String usn, String branch, String cgpa,
+        public ApplicantRow(Long appId, Long studentId,
+                            String name, String usn,
+                            String branch, String cgpa,
                             String currentStatus) {
             this.appId = appId;
             this.studentId = studentId;

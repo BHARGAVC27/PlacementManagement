@@ -47,7 +47,8 @@ public class MyApplicationsController implements StudentChildController {
         rejectedCount.setText("...");
 
         colCompany.setCellValueFactory(d ->
-            new SimpleStringProperty(d.getValue().path("companyName").asText()));
+            new SimpleStringProperty(
+                d.getValue().path("companyName").asText()));
 
         colAppliedDate.setCellValueFactory(d -> {
             String raw = d.getValue().path("appliedDate").asText();
@@ -59,26 +60,26 @@ public class MyApplicationsController implements StudentChildController {
             }
         });
 
-        // Status column with color badge
         colStatus.setCellValueFactory(d ->
-            new SimpleStringProperty(d.getValue().path("currentStatus").asText()));
+            new SimpleStringProperty(
+                d.getValue().path("currentStatus").asText()));
         colStatus.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String status, boolean empty) {
                 super.updateItem(status, empty);
                 if (empty || status == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(formatStatus(status));
-                    setStyle(getBadgeStyle(status));
+                    setText(null); setStyle(""); return;
                 }
+                setText(formatStatus(status));
+                setStyle(getBadgeStyle(status));
             }
         });
 
         colRemarks.setCellValueFactory(d -> {
             String remarks = d.getValue().path("remarks").asText();
-            return new SimpleStringProperty(remarks.isEmpty() ? "—" : remarks);
+            return new SimpleStringProperty(
+                remarks.isEmpty() || remarks.startsWith("REJECTED_FROM")
+                    ? "—" : remarks);
         });
 
         loadApplications();
@@ -90,8 +91,10 @@ public class MyApplicationsController implements StudentChildController {
             try {
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/applications/my"))
-                    .header("Authorization", "Bearer " + SessionManager.getInstance().getToken())
+                    .uri(URI.create(
+                        "http://localhost:8080/api/applications/my"))
+                    .header("Authorization",
+                        "Bearer " + SessionManager.getInstance().getToken())
                     .GET().build();
 
                 HttpResponse<String> response = client.send(
@@ -101,20 +104,33 @@ public class MyApplicationsController implements StudentChildController {
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode array = mapper.readTree(response.body());
 
-                    ObservableList<JsonNode> apps = FXCollections.observableArrayList();
-                    long total = 0, shortlisted = 0, interviews = 0,
-                         offered = 0, rejected = 0;
+                    ObservableList<JsonNode> apps =
+                        FXCollections.observableArrayList();
+
+                    long total = 0, shortlisted = 0,
+                         interviews = 0, offered = 0, rejected = 0;
 
                     for (JsonNode app : array) {
                         apps.add(app);
                         total++;
                         String st = app.path("currentStatus").asText();
-                        switch (st) {
-                            case "SHORTLISTED_OA", "OA_CLEARED" -> shortlisted++;
-                            case "INTERVIEW_SCHEDULED"           -> interviews++;
-                            case "OFFERED"                       -> offered++;
-                            case "REJECTED"                      -> rejected++;
+
+                        // Shortlisted = reached OA or beyond
+                        if (st.equals("SHORTLISTED_OA")
+                                || st.equals("OA_CLEARED")
+                                || st.equals("INTERVIEW_SCHEDULED")
+                                || st.equals("OFFERED")) {
+                            shortlisted++;
                         }
+
+                        // Interview = reached interview or beyond
+                        if (st.equals("INTERVIEW_SCHEDULED")
+                                || st.equals("OFFERED")) {
+                            interviews++;
+                        }
+
+                        if (st.equals("OFFERED")) offered++;
+                        if (st.equals("REJECTED")) rejected++;
                     }
 
                     final long t = total, s = shortlisted,
@@ -133,7 +149,8 @@ public class MyApplicationsController implements StudentChildController {
                     });
                 } else {
                     Platform.runLater(() ->
-                        statusLabel.setText("Error loading applications."));
+                        statusLabel.setText(
+                            "Error loading applications."));
                 }
             } catch (Exception e) {
                 Platform.runLater(() ->
@@ -150,28 +167,42 @@ public class MyApplicationsController implements StudentChildController {
 
     private String formatStatus(String status) {
         return switch (status) {
-            case "APPLIED"              -> "📝 Applied";
-            case "ELIGIBLE"             -> "✅ Eligible";
-            case "SHORTLISTED_OA"       -> "⭐ Shortlisted for OA";
-            case "OA_CLEARED"           -> "🎯 OA Cleared";
-            case "INTERVIEW_SCHEDULED"  -> "📅 Interview Scheduled";
-            case "OFFERED"              -> "🎉 Offered!";
-            case "REJECTED"             -> "❌ Rejected";
-            default                     -> status;
+            case "APPLIED"             -> "📝 Applied";
+            case "ELIGIBLE"            -> "✅ Eligible";
+            case "SHORTLISTED_OA"      -> "⭐ Shortlisted for OA";
+            case "OA_CLEARED"          -> "🎯 OA Cleared";
+            case "INTERVIEW_SCHEDULED" -> "📅 Interview Scheduled";
+            case "OFFERED"             -> "🎉 Offered!";
+            case "REJECTED"            -> "❌ Rejected";
+            default                    -> status;
         };
     }
 
     private String getBadgeStyle(String status) {
-        String base = "-fx-font-weight:bold; -fx-font-size:12px; -fx-padding:4 8 4 8;";
+        String base =
+            "-fx-font-weight:bold; -fx-font-size:12px;"
+            + "-fx-padding:4 8 4 8;";
         return base + switch (status) {
-            case "APPLIED"             -> "-fx-text-fill:#3182ce;";
-            case "ELIGIBLE"            -> "-fx-text-fill:#38a169;";
-            case "SHORTLISTED_OA"      -> "-fx-text-fill:#d69e2e;";
-            case "OA_CLEARED"          -> "-fx-text-fill:#805ad5;";
-            case "INTERVIEW_SCHEDULED" -> "-fx-text-fill:#2b6cb0;";
-            case "OFFERED"             -> "-fx-text-fill:#276749; -fx-background-color:#c6f6d5; -fx-background-radius:4;";
-            case "REJECTED"            -> "-fx-text-fill:#9b2335; -fx-background-color:#fed7d7; -fx-background-radius:4;";
-            default                    -> "-fx-text-fill:#4a5568;";
+            case "APPLIED"             ->
+                "-fx-text-fill:#3182ce;";
+            case "ELIGIBLE"            ->
+                "-fx-text-fill:#38a169;";
+            case "SHORTLISTED_OA"      ->
+                "-fx-text-fill:#d69e2e;";
+            case "OA_CLEARED"          ->
+                "-fx-text-fill:#805ad5;";
+            case "INTERVIEW_SCHEDULED" ->
+                "-fx-text-fill:#2b6cb0;";
+            case "OFFERED"             ->
+                "-fx-text-fill:#276749;"
+                + "-fx-background-color:#c6f6d5;"
+                + "-fx-background-radius:4;";
+            case "REJECTED"            ->
+                "-fx-text-fill:#9b2335;"
+                + "-fx-background-color:#fed7d7;"
+                + "-fx-background-radius:4;";
+            default                    ->
+                "-fx-text-fill:#4a5568;";
         };
     }
 }
