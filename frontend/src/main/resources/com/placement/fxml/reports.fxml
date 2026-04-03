@@ -1,9 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      style="-fx-padding:30; -fx-background-color:#f0f4f8;"
-      stylesheets="@../styles/app.css">
-    <Label text="Reports" styleClass="page-title"/>
-    <Label text="Coming soon..." styleClass="page-subtitle"/>
-</VBox>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+
+<ScrollPane
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.placement.controller.ReportsController"
+    fitToWidth="true"
+    style="-fx-background-color:#f7f8fc; -fx-background:transparent;">
+  <content>
+    <VBox spacing="20" style="-fx-background-color:#f7f8fc; -fx-padding:28;">
+
+      <Label text="Reports and Analytics"
+             style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:#1a202c;" />
+      <Label fx:id="statusLabel" text="Loading..."
+             style="-fx-text-fill:#3182ce; -fx-font-size:13px;" />
+
+      <!-- Summary Cards -->
+      <HBox spacing="16">
+        <VBox spacing="4" style="-fx-background-color:#ebf8ff; -fx-padding:16; -fx-background-radius:8; -fx-pref-width:145;">
+          <Label text="Total Students" style="-fx-text-fill:#2b6cb0; -fx-font-size:12px;" />
+          <Label fx:id="lblTotalStudents" text="0"
+                 style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#2b6cb0;" />
+        </VBox>
+        <VBox spacing="4" style="-fx-background-color:#f0fff4; -fx-padding:16; -fx-background-radius:8; -fx-pref-width:145;">
+          <Label text="Job Drives" style="-fx-text-fill:#276749; -fx-font-size:12px;" />
+          <Label fx:id="lblTotalJobs" text="0"
+                 style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#276749;" />
+        </VBox>
+        <VBox spacing="4" style="-fx-background-color:#fffaf0; -fx-padding:16; -fx-background-radius:8; -fx-pref-width:145;">
+          <Label text="Students Offered" style="-fx-text-fill:#c05621; -fx-font-size:12px;" />
+          <Label fx:id="lblOffered" text="0"
+                 style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#c05621;" />
+        </VBox>
+        <VBox spacing="4" style="-fx-background-color:#fff5f5; -fx-padding:16; -fx-background-radius:8; -fx-pref-width:145;">
+          <Label text="Placement %" style="-fx-text-fill:#c53030; -fx-font-size:12px;" />
+          <Label fx:id="lblPlacementPct" text="0%"
+                 style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#c53030;" />
+        </VBox>
+      </HBox>
+
+      <!-- Package Statistics -->
+      <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10;">
+        <Label text="Package Statistics (LPA)"
+               style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+        <Separator />
+        <HBox spacing="60">
+          <VBox spacing="4">
+            <Label text="Average Package" style="-fx-text-fill:#718096; -fx-font-size:12px;" />
+            <Label fx:id="lblAvgPkg" text="0 LPA"
+                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#2b6cb0;" />
+          </VBox>
+          <VBox spacing="4">
+            <Label text="Highest Package" style="-fx-text-fill:#718096; -fx-font-size:12px;" />
+            <Label fx:id="lblMaxPkg" text="0 LPA"
+                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#276749;" />
+          </VBox>
+          <VBox spacing="4">
+            <Label text="Lowest Package" style="-fx-text-fill:#718096; -fx-font-size:12px;" />
+            <Label fx:id="lblMinPkg" text="0 LPA"
+                   style="-fx-font-size:20px; -fx-font-weight:bold; -fx-text-fill:#c05621;" />
+          </VBox>
+        </HBox>
+      </VBox>
+
+      <!-- Pipeline + Top Companies -->
+      <HBox spacing="16">
+        <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10; -fx-pref-width:320;">
+          <Label text="Application Pipeline"
+                 style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+          <Separator />
+          <GridPane hgap="40" vgap="10">
+            <Label text="Applied"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="lblTotalApplied" text="0"
+                   style="-fx-font-weight:bold;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="OA Shortlisted"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="lblShortlisted" text="0"
+                   style="-fx-font-weight:bold;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="OA Cleared"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="lblOACleared" text="0"
+                   style="-fx-font-weight:bold;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Interview Scheduled"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label fx:id="lblInterview" text="0"
+                   style="-fx-font-weight:bold;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label text="Offered"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <Label fx:id="lblOfferedPipeline" text="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#276749;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label text="Rejected"
+                   style="-fx-text-fill:#718096;"
+                   GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <Label fx:id="lblRejected" text="0"
+                   style="-fx-font-weight:bold; -fx-text-fill:#e53e3e;"
+                   GridPane.columnIndex="1" GridPane.rowIndex="5" />
+          </GridPane>
+        </VBox>
+
+        <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10; -fx-pref-width:320;">
+          <Label text="Top Hiring Companies"
+                 style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+          <Separator />
+          <VBox fx:id="topHiringBox" spacing="6" />
+        </VBox>
+      </HBox>
+
+      <!-- Company Offers + Branch Placement -->
+      <HBox spacing="16">
+        <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10; -fx-pref-width:320;">
+          <Label text="Company-wise Offers"
+                 style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+          <Separator />
+          <VBox fx:id="companyOffersBox" spacing="6" />
+        </VBox>
+
+        <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10; -fx-pref-width:320;">
+          <Label text="Branch-wise Placement %"
+                 style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+          <Separator />
+          <VBox fx:id="branchPctBox" spacing="6" />
+        </VBox>
+      </HBox>
+
+    </VBox>
+  </content>
+</ScrollPane>

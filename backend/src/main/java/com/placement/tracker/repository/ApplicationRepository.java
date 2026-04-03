@@ -17,4 +17,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     // Spring Data derives query: select a from Application a where a.currentStatus = ?1
     List<Application> findByCurrentStatus(AppStatus currentStatus);
+
+    // NEW: Find all applications for a student with a specific status
+    // Used to check which jobs a student has been shortlisted/scheduled for
+    List<Application> findByStudentIdAndCurrentStatus(Long studentId, AppStatus currentStatus);
 }

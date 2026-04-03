@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,5 +40,16 @@ public class JobRoundController {
     @Operation(summary = "List rounds by job")
     public ResponseEntity<List<JobRoundResponse>> listByJob(@PathVariable Long jobId) {
         return ResponseEntity.ok(jobRoundService.listByJob(jobId));
+    }
+
+    // NEW: Returns interview rounds only for jobs where the logged-in
+    // student has been shortlisted (status = INTERVIEW_SCHEDULED).
+    @GetMapping("/my-interviews")
+    @Operation(summary = "Get interview rounds for logged-in student")
+    public ResponseEntity<List<JobRoundResponse>> getMyInterviews(
+            @AuthenticationPrincipal UserDetails principal) {
+        return ResponseEntity.ok(
+                jobRoundService.getInterviewRoundsForStudent(principal.getUsername())
+        );
     }
 }

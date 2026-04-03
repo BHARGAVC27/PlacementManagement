@@ -1,9 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      style="-fx-padding:30; -fx-background-color:#f0f4f8;"
-      stylesheets="@../styles/app.css">
-    <Label text="My Profile" styleClass="page-title"/>
-    <Label text="Coming soon..." styleClass="page-subtitle"/>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.placement.controller.StudentProfileController"
+      spacing="20"
+      style="-fx-background-color:#f7f8fc; -fx-padding:28;">
+
+    <Label text="My Profile" style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:#1a202c;" />
+    <Label fx:id="statusLabel" text="" style="-fx-text-fill:#3182ce; -fx-font-size:13px;" />
+
+    <!-- Personal Info Card -->
+    <VBox spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10;">
+        <Label text="Personal Information" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+        <Separator />
+        <GridPane hgap="40" vgap="12">
+            <Label text="Full Name"  style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="lblName"   text="—" style="-fx-font-weight:bold;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Email"      style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="lblEmail"  text="—" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="USN"        style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="lblUsn"    text="—" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Phone"      style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label fx:id="lblPhone"  text="—" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        </GridPane>
+    </VBox>
+
+    <!-- Academic Info VIEW mode -->
+    <VBox fx:id="viewBox" spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10;">
+        <Label text="Academic Information" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+        <Separator />
+        <GridPane hgap="40" vgap="12">
+            <Label text="Branch"         style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="lblBranch"     text="—" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Current CGPA"   style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="lblCgpa"       text="—" style="-fx-font-weight:bold; -fx-text-fill:#2b6cb0;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="10th %"         style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="lblTenth"      text="—" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="12th %"         style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label fx:id="lblTwelfth"    text="—" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Active Backlogs" style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <Label fx:id="lblBacklogs"   text="—" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Resume URL"     style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <Label fx:id="lblResume"     text="—" style="-fx-text-fill:#3182ce;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        </GridPane>
+    </VBox>
+
+    <!-- Academic Info EDIT mode -->
+    <VBox fx:id="editBox" spacing="12" style="-fx-background-color:white; -fx-padding:20; -fx-background-radius:10;">
+        <Label text="Edit Academic Information" style="-fx-font-size:15px; -fx-font-weight:bold; -fx-text-fill:#2d3748;" />
+        <Separator />
+        <GridPane hgap="20" vgap="12">
+            <Label text="Branch"          style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="tfBranch"   promptText="e.g. CSE" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label text="Current CGPA"    style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="tfCgpa"     promptText="e.g. 8.5" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="10th %"          style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="tfTenth"    promptText="e.g. 92.5" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="12th %"          style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="tfTwelfth"  promptText="e.g. 88.0" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Active Backlogs" style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="tfBacklogs" promptText="e.g. 0" prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Resume URL"      style="-fx-text-fill:#718096;" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <TextField fx:id="tfResume"   promptText="https://drive.google.com/..." prefWidth="220" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        </GridPane>
+    </VBox>
+
+    <!-- Edit / Save Button -->
+    <HBox>
+        <Button fx:id="btnEdit" text="Edit Profile" onAction="#handleEditSave"
+                style="-fx-background-color:#3182ce; -fx-text-fill:white; -fx-font-weight:bold; -fx-padding:10 24; -fx-background-radius:6;" />
+    </HBox>
+
 </VBox>
