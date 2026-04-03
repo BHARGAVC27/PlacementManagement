@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      style="-fx-padding:30; -fx-background-color:#f0f4f8;"
-      stylesheets="@../styles/app.css">
-    <Label text="Student Database" styleClass="page-title"/>
-    <Label text="Coming soon..." styleClass="page-subtitle"/>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.placement.controller.StudentDatabaseController" spacing="16" style="-fx-background-color:#f7f8fc; -fx-padding:28;">
+
+    <Label text="Student Database" style="-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:#1a202c;" />
+
+    <HBox spacing="12" style="-fx-alignment:center-left;">
+        <TextField fx:id="searchField" promptText="Search by name, USN, branch or email..." prefWidth="380" style="-fx-padding:8; -fx-background-radius:6;" />
+    </HBox>
+
+    <Label fx:id="statusLabel" text="Loading..." style="-fx-text-fill:#4a5568; -fx-font-size:13px;" />
+
+    <TableView fx:id="studentTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colName"     text="Full Name"   prefWidth="150" />
+            <TableColumn fx:id="colUSN"      text="USN"         prefWidth="130" />
+            <TableColumn fx:id="colEmail"    text="Email"       prefWidth="200" />
+            <TableColumn fx:id="colBranch"   text="Branch"      prefWidth="80" />
+            <TableColumn fx:id="colCGPA"     text="CGPA"        prefWidth="70" />
+            <TableColumn fx:id="col10th"     text="10th %"      prefWidth="75" />
+            <TableColumn fx:id="col12th"     text="12th %"      prefWidth="75" />
+            <TableColumn fx:id="colBacklogs" text="Backlogs"    prefWidth="75" />
+        </columns>
+        <placeholder>
+            <Label text="No students found." />
+        </placeholder>
+    </TableView>
+
 </VBox>

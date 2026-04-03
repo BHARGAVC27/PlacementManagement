@@ -9,6 +9,7 @@ public record JobRoundResponse(
         LocalDateTime scheduledTime,
         String venueOrLink,
         String instructions,
-        Long jobPostId
+        Long jobPostId,
+        String companyName
 ) {
 }

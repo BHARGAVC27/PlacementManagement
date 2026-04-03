@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      style="-fx-padding:30; -fx-background-color:#f0f4f8;"
-      stylesheets="@../styles/app.css">
-    <Label text="Interview Schedule" styleClass="page-title"/>
-    <Label text="Coming soon..." styleClass="page-subtitle"/>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.placement.controller.InterviewScheduleController" spacing="16" style="-fx-background-color:#f7f8fc; -fx-padding:28;">
+
+    <Label text="Interview Schedule" style="-fx-font-size:22px; -fx-font-weight:bold;" />
+    <Label fx:id="statusLabel" text="Loading..." />
+
+    <TableView fx:id="roundTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colCompany" text="Company / Job" prefWidth="130" />
+            <TableColumn fx:id="colRound" text="Round Name" prefWidth="160" />
+            <TableColumn fx:id="colTime" text="Scheduled Time" prefWidth="165" />
+            <TableColumn fx:id="colVenue" text="Venue / Link" prefWidth="200" />
+            <TableColumn fx:id="colInstructions" text="Instructions" prefWidth="260" />
+        </columns>
+        <placeholder><Label text="No interviews scheduled yet." /></placeholder>
+    </TableView>
+
 </VBox>
